@@ -5,7 +5,7 @@ input_ = "14	0	15	12	11	11	3	5	1	6	8	4	9	1	8	4"
 
 # input_ = "0 2 7 0"
 
-blocks = [int(x) for x in input_.split()]
+blocks = [int(x) for x in input_.split()]  # Type: List[int]
 
 
 def max_index(memory: List[int]) -> int:
@@ -20,7 +20,7 @@ def max_index(memory: List[int]) -> int:
 
 def distribute(memory: List[int]) -> List[int]:
     target = max_index(memory)  # Type: int
-    to_dist = memory[target]
+    to_dist = memory[target]  # Type: int
     memory[target] = 0
     while to_dist > 0:
         target += 1
@@ -29,7 +29,7 @@ def distribute(memory: List[int]) -> List[int]:
     return memory
 
 
-count = 0
+count = 0  # Type: int
 
 block_history = [(blocks[:], 0)]  # Type: List[Tuple[List[int], int]]
 
@@ -39,7 +39,7 @@ while True:
     if blocks not in [x[0] for x in block_history]:
         block_history.append((blocks[:], count))
     else:
-        first_seen = [x[1] for x in block_history if x[0] == blocks][0]
+        first_seen = [x[1] for x in block_history if x[0] == blocks][0]  # Type: int
         print("first seen: {}".format(first_seen))
         print("last seen: {}".format(count))
         print("difference: {}".format(count - first_seen))
