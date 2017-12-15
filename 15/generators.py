@@ -16,10 +16,7 @@ gen_b = advent_generator(gen_b_input, 48271)
 count = 0
 
 for x in range(40000000):
-    gen_a_num = bin(next(gen_a))
-    gen_b_num = bin(next(gen_b))
-
-    if gen_a_num[-16:] == gen_b_num[-16:]:
+    if next(gen_a) & 65535 == next(gen_b) & 65535:
         count += 1
 
 print("judge's count: {}".format(count))
