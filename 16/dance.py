@@ -14,23 +14,45 @@ def partner(dance_array, name1, name2):
     pos2 = dance_array.index(name2)
     return exchange(dance_array, pos1, pos2)
 
-dancers = [x for x in 'abcdefghijklmnop']
+def dance(dance_array, moves):
+    for move in moves:
+        if 's' in move:
+            dance_array = spin(dance_array, int(''.join(move[1:])))
+            continue
+        arg1 = move[1:].split('/')[0]
+        arg2 = move[1:].split('/')[1]
+        if 'x' in move:
+            dance_array = exchange(dance_array, int(arg1), int(arg2))
+        if 'p' in move:
+            dance_array = partner(dance_array, arg1, arg2)
+    return dance_array
+
+fresh_dancers = [x for x in 'abcdefghijklmnop']
 
 with open("input1.txt") as f:
     line = f.readline()
     moves = [x for x in line.split(',')]
 
-for x in range(1):
-    print("On iteration {}", x)
-    for move in moves:
-        if 's' in move:
-            dancers = spin(dancers, int(''.join(move[1:])))
-            continue
-        arg1 = move[1:].split('/')[0]
-        arg2 = move[1:].split('/')[1]
-        if 'x' in move:
-            dancers = exchange(dancers, int(arg1), int(arg2))
-        if 'p' in move:
-            dancers = partner(dancers, arg1, arg2)
+# part 1
 
+dancers = fresh_dancers.copy()
+dancers = dance(dancers, moves)
+print(''.join(dancers))
+
+# part 2
+dancers = fresh_dancers.copy()
+count = 0
+
+while True:
+    dancers = dance(dancers, moves)
+    count += 1
+    if ''.join(dancers) == "abcdefghijklmnop":
+        print("found cycle after {} iterations".format(count))
+        break
+
+iterations_needed = 1000000000 % count
+
+dancers = fresh_dancers.copy()
+for x in range(iterations_needed):
+    dancers = dance(dancers, moves)
 print(''.join(dancers))
