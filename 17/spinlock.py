@@ -1,15 +1,12 @@
 spinlock = list([0])
 step = 344
 index = 0
-counter = 0
 
 # part 1
 
 for x in range(2017):
-    index = (index + step) % len(spinlock)
-    counter += 1
-    spinlock.insert(index+1, counter)
-    index += 1
+    index = ((index + step) % len(spinlock)) + 1
+    spinlock.insert(index, x+1)
 
 print(spinlock[index+1])
 
