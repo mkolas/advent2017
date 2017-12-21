@@ -3,7 +3,7 @@ from math import ceil
 import copy
 
 rules = dict()
-an_art = ["#.", "..#", "###"]
+an_art = [".#.", "..#", "###"]
 
 
 def text_to_art(text):
@@ -15,12 +15,10 @@ def art_to_text(art):
 
 
 def flip_h(art):
+    reversed_ = list()
     for line in art:
-        i = 0
-        while i < len(line)/2:
-            line[i], line[len(line)-1-i] = line[len(line)-1-i], line[i]
-            i += 1
-    return art
+        reversed_.append(line[::-1])
+    return reversed_
 
 
 def flip_v(art):
@@ -28,31 +26,61 @@ def flip_v(art):
 
 
 def rotate_r(art):
-    return [list(a) for a in zip(*flip_v(art))]
+    return [''.join(list(a)) for a in zip(*flip_v(art))]
 
 
 def chunk_art(art):
     chunks = list()
     if len(art) == 2 or len(art) == 3:
-        return art
+        chunks.append(art)
+        return chunks
     if len(art) % 2 == 0:
         chunk_row = list()
-        rows_to_chunk = art[:2]
-        art = art[2:]
-        while len(rows_to_chunk[0]) > 0:
+        while len(art) > 0:
+            rows_to_chunk = art[:2]
+            art = art[2:]
+            while len(rows_to_chunk[0]) > 0:
+                chunk = [rows_to_chunk[0][:2], rows_to_chunk[1][:2]]
+                chunk_row.append(chunk)
+                rows_to_chunk[0] = rows_to_chunk[0][2:]
+                rows_to_chunk[1] = rows_to_chunk[1][2:]
+            chunks.append(chunk_row)
+        return chunks
+    elif len(art) % 3 == 0:
+        chunk_row = list()
+        while len(art) > 0:
+            rows_to_chunk = art[:3]
+            art = art[3:]
+            while len(rows_to_chunk[0]) > 0:
+                chunk = [rows_to_chunk[0][:3], rows_to_chunk[1][:3], rows_to_chunk[2][:3]]
+                chunk_row.append(chunk)
+                rows_to_chunk[0] = rows_to_chunk[0][2:]
+                rows_to_chunk[1] = rows_to_chunk[1][2:]
+                rows_to_chunk[2] = rows_to_chunk[2][2:]
+            chunks.append(chunk_row)
+        return chunks
 
-        chunk_row.append()
-    quarters.append([y[:ceil(len(y)/2)] for i, y in enumerate(art) if i < len(art) / 2])
-    quarters.append([y[ceil(len(y)/2):] for i, y in enumerate(art) if i < len(art) / 2])
-    quarters.append([y[:ceil(len(y)/2)] for i, y in enumerate(art) if i >= len(art) / 2])
-    quarters.append([y[ceil(len(y)/2):] for i, y in enumerate(art) if i >= len(art) / 2])
-    return quarters
 
+def init_rows(size):
+    return_rows = list()
+    for s in range(size):
+        return_rows.append([])
+    return return_rows
+
+
+def combine_row(chunk_row):
+    return_rows = init_rows(len(rules[art_to_text(chunk_row[0])]))
+    for chunk in chunk_row:
+        transformed_chunk = rules[art_to_text(chunk)]
+        # print(transformed_chunk)
+        for i, r in enumerate(transformed_chunk):
+            return_rows[i].extend(r)
+    return return_rows
 
 
 def print_art(art):
     for line in art:
-        print(''.join(line), "\n")
+        print(line, "\n")
 
 
 with open("test.txt") as f:
@@ -83,13 +111,14 @@ with open("test.txt") as f:
 for x in range(5):
     print("iteration ", x)
     art_chunks = chunk_art(an_art)
+    # print(art_chunks)
     if len(art_chunks) == 1:
         an_art = rules[art_to_text(art_chunks[0])]
     else:
         new_art = list()
-        for an_chunk in art_chunks:
-            new_chunk = rules[art_to_text(an_chunk)]
-            new_art = assemble_art(new_art, new_chunk)
+        for row in art_chunks:
+            new_row = combine_row(row)
+            new_art.append(new_row)
         an_art = new_art
     print_art(an_art)
 
