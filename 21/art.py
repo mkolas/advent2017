@@ -80,6 +80,7 @@ def print_art(art):
     for line in art:
         print(line, "\n")
 
+
 def count_hashes(art):
     count = 0
     for row in an_art:
@@ -87,7 +88,6 @@ def count_hashes(art):
             if char is '#':
                 count += 1
     return count
-
 
 
 with open("input1.txt") as f:
